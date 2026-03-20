@@ -11,8 +11,8 @@ SQL does not care about white space or capitalisation but you should!
 -- simplest statement, bring back all data from a table
 SELECT 
 	*
-FROM
-	PatientStay;
+	FROM
+		PatientStay;
 
 /*
 Rather than * to select all columns, choose the columns you want
@@ -22,6 +22,7 @@ SELECT
 	, Tariff
 	, Ward
 	, Hospital
+	, AdmittedDate
 FROM
 	PatientStay;
 
@@ -35,6 +36,7 @@ SELECT
 	, p.Ward
 	, p.Tariff
 	, p.Hospital
+	, p.AdmittedDate
 FROM
 	PatientStay p;
 
@@ -50,6 +52,7 @@ SELECT
 	, ps.Tariff
 FROM
 	PatientStay ps;
+
 
 /*
 some alternative WHERE clauses.  Try these out
@@ -115,6 +118,7 @@ SELECT
 	, ps.AdmittedDate
 	-- See documentation for DATEADD at https://www.w3schools.com/sql/func_sqlserver_dateadd.asp
 	, DATEADD(WEEK, -2, ps.AdmittedDate) AS ReminderDate
+	, DATEDIFF(Day, ps.AdmittedDate, ps.DischargeDate) AS DaysInHospital
 	, ps.Hospital
 	, ps.Ward
 	, ps.Tariff
@@ -187,7 +191,7 @@ We can join the PatientStay and DimHospital on the column columns, named Hospita
 SELECT
 	*
 FROM
-	DimHospital;
+	DimHospitalBad;
 
 SELECT
 	*
@@ -203,9 +207,11 @@ JOIN DimHospital h ON
 SELECT
 	ps.PatientId
 	, ps.AdmittedDate
+	, ps.Hospital
+	, h.Hospital
 	, h.HospitalType
 	, h.HospitalSize
 FROM
 	PatientStay ps
-JOIN DimHospital h ON
+RIGHT JOIN DimHospitalBad h ON
 	ps.Hospital = h.Hospital;
